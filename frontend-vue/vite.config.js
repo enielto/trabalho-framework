@@ -10,7 +10,7 @@ export default defineConfig({
     vue(),
     vueDevTools(),
   ],
-  base: '/Joao-Victor-Goncalves-de-Roure---TDE-2-FRAMEWORKS/',
+  base: '/trabalho-framework/',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
