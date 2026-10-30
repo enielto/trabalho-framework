@@ -1,0 +1,52 @@
+
+name: Deploy Vue to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar o projeto
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Instalar dependências
+        working-directory: frontend-vue
+        run: npm ci
+
+      - name: Gerar versão de produção
+        working-directory: frontend-vue
+        run: npm run build
+
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Preparar arquivos
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: frontend-vue/dist
+
+      - name: Publicar aplicação
+        id: deployment
+        uses: actions/deploy-pages@v4
